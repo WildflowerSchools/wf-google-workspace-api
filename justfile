@@ -5,7 +5,7 @@ install:
      pipenv install --dev
 
 fmt:
-    autopep8 --aggressive --in-place .
+    autopep8 app
 
 test:
     PYTHONPATH=./ pytest -s

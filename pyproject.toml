@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "wf-google-workspace-api"
+version = "1.1.0"
+description = "Python FastAPI for easier interaction with Google Workspace"
+authors = ["Benjamin Jaffe-Talberg <ben.talberg@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+fastapi = "^0.75.1"
+google-api-python-client = '>=2.38.0'
+mangum = "^0.14.1"
+pyjwt = {extras = ["crypto"], version = ">=2.3.0"}
+python = "^3.9"
+python-jose = ">=3.3.0"
+uvicorn = "^0.17.6"
+
+[tool.poetry.dev-dependencies]
+autopep8 = '>=1.5.5'
+pytest = '>=6.2.2'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.autopep8]
+max_line_length = 120
+in-place = true
+recursive = true
+aggressive = 1

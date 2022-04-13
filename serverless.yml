@@ -1,29 +1,27 @@
 org: wildflowerschools
 app: wf-google-workspace-api
-service: aws-python-flask-api-project
+service: wf-google-workspace-api-server
 
 frameworkVersion: '3'
 
 useDotenv: true
 
-custom:
-  wsgi:
-    app: app.app
-    pythonBin: python
-
 provider:
   name: aws
   runtime: python3.9
+  stage: ${opt:stage, 'dev'}
+  timeout: 30
   environment:
     GOOGLE_WORKSPACE_SERVICE_ACCOUNT_CREDENTIALS: ${env:GOOGLE_WORKSPACE_SERVICE_ACCOUNT_CREDENTIALS}
     GOOGLE_WORKSPACE_SERVICE_ACCOUNT_DELEGATED_USER: ${env:GOOGLE_WORKSPACE_SERVICE_ACCOUNT_DELEGATED_USER}
     GOOGLE_WORKSPACE_CUSTOMER_ID: ${env:GOOGLE_WORKSPACE_CUSTOMER_ID}
     AUTH0_AUDIENCE: ${env:AUTH0_AUDIENCE}
     AUTH0_DOMAIN: ${env:AUTH0_DOMAIN}
+    STAGE: ${self:provider.stage}
 
 functions:
   api:
-    handler: wsgi_handler.handler
+    handler: app.main.handler
     events:
       - http:
           path: /
@@ -33,5 +31,5 @@ functions:
           method: ANY
 
 plugins:
-  - serverless-wsgi
+  - serverless-offline
   - serverless-python-requirements

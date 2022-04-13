@@ -15,3 +15,6 @@ AUTH0_AUDIENCE = os.getenv(
 
 AUTH0_DOMAIN = os.getenv(
     "AUTH0_DOMAIN", None)
+
+STAGE = os.getenv(
+    "STAGE", 'dev')
