@@ -24,7 +24,7 @@ def get_group_members(group_email):
     return JSONResponse(content=group['members'])
 
 
-@router.post("/{group_email}/members/{member_email}")
+@router.post("/{group_email}/members/{member_email}", dependencies=[Depends(auth.JWTBearer(any_scope=['edit:groups']))])
 def add_member(group_email, member_email):
     response = None
     try:
@@ -36,7 +36,7 @@ def add_member(group_email, member_email):
     return JSONResponse(content=response)
 
 
-@router.delete("/{group_email}/members/{member_email}")
+@router.delete("/{group_email}/members/{member_email}", dependencies=[Depends(auth.JWTBearer(any_scope=['edit:groups']))])
 def delete_member(group_email, member_email):
     try:
         directory.remove_member_from_group(group_email, member_email)

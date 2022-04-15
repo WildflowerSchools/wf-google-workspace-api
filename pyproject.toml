@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wf-google-workspace-api"
-version = "1.1.0"
+version = "1.1.1"
 description = "Python FastAPI for easier interaction with Google Workspace"
 authors = ["Benjamin Jaffe-Talberg <ben.talberg@gmail.com>"]
 license = "MIT"

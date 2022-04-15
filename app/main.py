@@ -69,7 +69,7 @@ def resource_not_found(request, ex):
 
 
 @app.exception_handler(auth.AuthError)
-def handle_auth_error(ex):
+def handle_auth_error(request, ex):
     logger.exception(ex)
     return JSONResponse(status_code=ex.status_code, content=ex.error)
 
