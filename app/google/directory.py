@@ -1,11 +1,12 @@
 import json
+from uuid import UUID
 
 from app import const
 from google.oauth2 import service_account
 import googleapiclient.discovery as discovery
 from googleapiclient import errors
 
-from app.models.members import Member
+from app.models.group_member import GroupMember
 
 GSUITE_SCOPES = [
     'https://www.googleapis.com/auth/admin.directory.domain.readonly',
@@ -75,7 +76,7 @@ def get_group_by_email(group_email):
 
 
 def add_member_to_group(group_email, member_email):
-    member = Member(
+    member = GroupMember(
         email=member_email,
         role='MEMBER'
     )
@@ -96,3 +97,33 @@ def remove_member_from_group(group_email, member_email):
     ).execute()
 
     return results
+
+
+def create_user_watch(uuid: UUID, url: str, token: str, ttl: int = 3600):
+    results = directory_service().users().watch(
+        body={
+            "id": str(uuid),
+            "token": token,
+            "address": url,
+            "params": {"ttl": ttl},
+            "payload": True,
+            "type": "web_hook"
+        },
+        customer=const.GOOGLE_WORKSPACE_CUSTOMER_ID,
+        projection="full",
+        viewType="admin_view",
+        maxResults=1
+    ).execute()
+
+    return results
+
+
+def delete_watch(uuid: UUID, resource_id: str):
+    res = directory_service().channels().stop(
+        body={
+            "id": str(uuid),
+            "resourceId": resource_id
+        }
+    ).execute()
+
+    return res

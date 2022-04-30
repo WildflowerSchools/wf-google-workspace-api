@@ -7,9 +7,10 @@ import sys
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
+from googleapiclient.errors import HttpError
 from mangum import Mangum
 
-from . import auth, const, router_users, router_groups
+from . import auth, const, router_users, router_groups, router_channels
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
@@ -56,6 +57,7 @@ async def log_request_details(request: Request):
 
 app.include_router(router_users.router, dependencies=[Depends(log_request_details)])
 app.include_router(router_groups.router, dependencies=[Depends(log_request_details)])
+app.include_router(router_channels.router, dependencies=[Depends(log_request_details)])
 
 
 @app.get("/")
@@ -72,6 +74,16 @@ def resource_not_found(request, ex):
 def handle_auth_error(request, ex):
     logger.exception(ex)
     return JSONResponse(status_code=ex.status_code, content=ex.error)
+
+
+@app.exception_handler(HttpError)
+def handle_google_sdk_error(request, ex):
+    if ex.resp.status == 404:
+        logger.warning(ex)
+    else:
+        logger.exception(ex)
+
+    return JSONResponse(status_code=ex.resp.status, content=ex.reason)
 
 
 @app.exception_handler(Exception)
